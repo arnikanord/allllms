@@ -1,7 +1,10 @@
 [build]
   base = "frontend"
   publish = "dist"
-  command = "yarn install && CI=false yarn build"
+  command = """
+    cd ../.netlify/functions && npm install && cd ../../frontend && \
+    yarn install && CI=false yarn build
+  """
   functions = "../.netlify/functions"
 
 [build.environment]

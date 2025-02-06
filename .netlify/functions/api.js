@@ -1,10 +1,20 @@
-const express = require('express');
-const serverless = require('serverless-http');
+import express from 'express';
+import serverless from 'serverless-http';
+import cors from 'cors';
+
 const app = express();
 
-// Import your server routes and middleware here
-const api = require('../../server');
+app.use(cors());
+app.use(express.json());
 
-app.use('/.netlify/functions/api', api);
+// Basic health check endpoint
+app.get('/.netlify/functions/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
-module.exports.handler = serverless(app);
+// Add your API routes here
+app.get('/.netlify/functions/api/test', (req, res) => {
+  res.json({ message: 'API is working!' });
+});
+
+export const handler = serverless(app);
