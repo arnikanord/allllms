@@ -1,11 +1,38 @@
-v-env
+# Environment files
 .env
+.env.*
 !.env.example
+docker/.env
+docker/.env.*
+!docker/.env.example
 
-node_modules
+# Dependencies
+node_modules/
+/dist
+/build
+
+# Local storage
+server/storage/*
+!server/storage/README.md
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
 __pycache__
 v-env
-.DS_Store
-aws_cf_deploy_anything_llm.json
 yarn.lock
 *.bak
+aws_cf_deploy_anything_llm.json
