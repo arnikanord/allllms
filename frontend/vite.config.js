@@ -1,7 +1,8 @@
 import { defineConfig } from "vite"
 import { fileURLToPath, URL } from "url"
 import postcss from "./postcss.config.js"
-import react from "@vitejs/plugin-react-swc"
+import reactSwc from "@vitejs/plugin-react-swc"
+import react from "@vitejs/plugin-react"
 import dns from "dns"
 import { visualizer } from "rollup-plugin-visualizer"
 import path from 'path'
@@ -35,13 +36,13 @@ export default defineConfig({
     postcss
   },
   plugins: [
-    react(),
+    process.env.USE_SWC ? reactSwc() : react(),
     visualizer({
-      template: "treemap", // or sunburst
+      template: "treemap",
       open: false,
       gzipSize: true,
       brotliSize: true,
-      filename: "bundleinspector.html" // will be saved in project's root
+      filename: "bundleinspector.html"
     })
   ],
   resolve: {
@@ -56,16 +57,13 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        // These settings ensure the primary JS and CSS file references are always index.{js,css}
-        // so we can SSR the index.html as text response from server/index.js without breaking references each build.
         entryFileNames: 'index.js',
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'index.css') return `index.css`;
+          if (assetInfo.name === 'index.css') return 'index.css';
           return assetInfo.name;
         },
       },
       external: [
-        // Reduces transformation time by 50% and we don't even use this variant, so we can ignore.
         /@phosphor-icons\/react\/dist\/ssr/,
       ]
     },
