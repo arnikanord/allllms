@@ -1,9 +1,10 @@
 import { defineConfig } from "vite"
 import { fileURLToPath, URL } from "url"
 import postcss from "./postcss.config.js"
-import react from "@vitejs/plugin-react"
+import react from "@vitejs/plugin-react-swc"
 import dns from "dns"
 import { visualizer } from "rollup-plugin-visualizer"
+import path from 'path'
 
 dns.setDefaultResultOrder("verbatim")
 
@@ -19,7 +20,13 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: "localhost"
+    host: "localhost",
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_BASE || 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    }
   },
   define: {
     "process.env": process.env
@@ -38,24 +45,15 @@ export default defineConfig({
     })
   ],
   resolve: {
-    alias: [
-      {
-        find: "@",
-        replacement: fileURLToPath(new URL("./src", import.meta.url))
-      },
-      {
-        process: "process/browser",
-        stream: "stream-browserify",
-        zlib: "browserify-zlib",
-        util: "util",
-        find: /^~.+/,
-        replacement: (val) => {
-          return val.replace(/^~/, "")
-        }
-      }
-    ]
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      'process': 'process/browser',
+    }
   },
+  base: '/',
   build: {
+    outDir: 'dist',
+    sourcemap: true,
     rollupOptions: {
       output: {
         // These settings ensure the primary JS and CSS file references are always index.{js,css}
