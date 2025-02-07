@@ -3,7 +3,9 @@
   publish = "dist"
   command = """
     cd ../.netlify/functions && npm install && cd ../../frontend && \
-    yarn install && yarn add vite && CI=false yarn build
+    yarn install --frozen-lockfile && \
+    yarn add -D autoprefixer postcss tailwindcss @vitejs/plugin-react @vitejs/plugin-react-swc vite && \
+    CI=false yarn build
   """
   functions = "../.netlify/functions"
 
